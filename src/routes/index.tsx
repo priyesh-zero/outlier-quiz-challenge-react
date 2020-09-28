@@ -4,11 +4,14 @@ import { BrowserRouter, Switch, Route, useLocation } from "react-router-dom";
 import { HomeRoute } from "./HomeRoute";
 import { QuizRoute } from "./QuizRoute";
 import { AnimatePresence } from "framer-motion";
+import { Providers } from "../providers";
 
 export const Routes = () => {
   return (
     <BrowserRouter>
-      <SwitchRoutes />
+      <Providers>
+        <SwitchRoutes />
+      </Providers>
     </BrowserRouter>
   );
 };
