@@ -1,23 +1,22 @@
+import { motion, useAnimation } from "framer-motion";
 import React, { useContext, useEffect } from "react";
-import { useRouteMatch, useHistory } from "react-router";
-import { motion } from "framer-motion";
-
 import Container from "react-bootstrap/esm/Container";
-import Button from "react-bootstrap/esm/Button";
-
-import { QuizContext } from "../../providers/contexts/QuizContext";
-import { routeVariants } from "../../framer-animation/routes";
-import { Rating } from "../../components/question/Rating";
+import { useHistory, useRouteMatch } from "react-router";
 import { Options } from "../../components/question/Options";
+import { Rating } from "../../components/question/Rating";
+import { routeVariants } from "../../framer-animation/routes";
+import { QuizContext } from "../../providers/contexts/QuizContext";
 
 export const Questions = () => {
   const {
     params: { qno },
   } = useRouteMatch<{ qno: string }>();
-  const { nextQuestion, currentQuestion, getCurrentQuestion } = useContext(
+  const { currentQuestion, getCurrentQuestion, progress } = useContext(
     QuizContext
   );
   const history = useHistory();
+  const successControls = useAnimation();
+  const errorControls = useAnimation();
 
   useEffect(() => {
     if (currentQuestion !== parseInt(qno)) {
@@ -28,13 +27,26 @@ export const Questions = () => {
   const question = getCurrentQuestion();
   if (!question) return <></>;
 
+  const handleSelect = async (option: string) => {
+    successControls.set("hidden");
+    errorControls.set("hidden");
+    if (question.correct_answer === option) {
+      await successControls.start("correct");
+      await successControls.start("hiddenTwo");
+    } else {
+      await errorControls.start("wrong");
+      await errorControls.start("hiddenTwo");
+    }
+    progress(question.correct_answer === option);
+  };
+
   return (
     <motion.div
       variants={routeVariants}
       initial={"entry"}
       animate={"stage"}
       exit={"exit"}
-      className="bg-dark h-100"
+      className="bg-dark flex-fill"
     >
       <Container
         className="h-100 d-flex flex-column justify-content-center align-items-center text-right"
@@ -52,11 +64,49 @@ export const Questions = () => {
         </motion.div>
         <Options
           options={[question.correct_answer, ...question.incorrect_answers]}
+          handleSelect={handleSelect}
         />
-        <Button variant="success" onClick={() => nextQuestion()}>
-          Next
-        </Button>
+        <div className="w-100 position-relative">
+          <motion.h2
+            className="position-absolute w-100 text-center"
+            variants={resultVariant}
+            initial="hidden"
+            animate={successControls}
+          >
+            Yeah!
+          </motion.h2>
+          <motion.h2
+            className="position-absolute w-100 text-center"
+            variants={resultVariant}
+            initial="hidden"
+            animate={errorControls}
+          >
+            Opps!
+          </motion.h2>
+        </div>
       </Container>
     </motion.div>
   );
+};
+
+const resultVariant = {
+  hidden: {
+    x: 200,
+    opacity: 0,
+  },
+  correct: {
+    x: 0,
+    opacity: 1,
+    color: "#28a745",
+  },
+  wrong: {
+    x: 0,
+    opacity: 1,
+    color: "#dc3545",
+  },
+  hiddenTwo: {
+    x: -200,
+    opacity: 0,
+    transition: { delay: 1 },
+  },
 };

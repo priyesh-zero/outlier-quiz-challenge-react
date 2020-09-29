@@ -32,7 +32,7 @@ export const UserNameModel: FC<UserNameModelProps> = ({ show, onHide }) => {
             setUser(values.name);
             actions.resetForm();
             onHide();
-            history.push("/quiz");
+            history.push("/quiz/0");
           }}
           initialValues={{ name: "" }}
         >

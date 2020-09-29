@@ -1,9 +1,10 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useRandomArray } from "../../hooks/useRandomArray";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface OptionsProps {
   options: string[];
+  handleSelect: (option: string) => void;
 }
 
 const variant = {
@@ -16,13 +17,8 @@ const variant = {
   hover: { scale: 1.1, x: 25, color: "#FFF" },
 };
 
-export const Options: FC<OptionsProps> = ({ options }) => {
+export const Options: FC<OptionsProps> = ({ options, handleSelect }) => {
   const randomOptions = useRandomArray(options);
-  const animation = useAnimation();
-  useEffect(() => {
-    animation.start("animate");
-  }, []);
-
   return (
     <>
       {randomOptions.map((option, index) => (
@@ -33,6 +29,7 @@ export const Options: FC<OptionsProps> = ({ options }) => {
           animate={"animate"}
           whileHover={"hover"}
           className="w-100 m-3 text-left text-muted"
+          onClick={() => handleSelect(option)}
         >
           {decodeURIComponent(option)}
         </motion.h3>
