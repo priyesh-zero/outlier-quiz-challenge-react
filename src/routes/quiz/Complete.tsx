@@ -13,7 +13,7 @@ export const CompleteScreen = () => {
     } else {
       persistScore();
     }
-  }, []);
+  }, [hasCompleted, persistScore, history]);
   return (
     <motion.div
       variants={routeVariants}

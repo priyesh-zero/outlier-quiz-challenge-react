@@ -84,9 +84,8 @@ export const QuizProvider: FC<{}> = ({ children }) => {
 
   const persistScore = useCallback(() => {
     users[name] = { maxScore, actualScore, minScore };
-    console.log(users);
     window.localStorage.setItem("users", JSON.stringify(users));
-  }, [users, actualScore, minScore, maxScore]);
+  }, [name, users, actualScore, minScore, maxScore]);
 
   const getCurrentQuestion: GetCurrentQuestion = () => {
     if (!questions) return null;
@@ -117,7 +116,7 @@ export const QuizProvider: FC<{}> = ({ children }) => {
         setCurrentQuestion((state) => state + 1);
       }
     },
-    [currentQuestion, questions]
+    [currentQuestion, questions, history]
   );
 
   const hasCompleted = useCallback(

@@ -28,13 +28,13 @@ export const Questions = () => {
     } else {
       setLoading(false);
     }
-  }, [checkAuth, setLoading]);
+  }, [checkAuth, setLoading, history]);
 
   useEffect(() => {
     if (currentQuestion !== parseInt(qno)) {
       history.push(`/quiz/${currentQuestion}`);
     }
-  }, [currentQuestion]);
+  }, [currentQuestion, qno, history]);
 
   const question = getCurrentQuestion();
   if (!question || loading)

@@ -15,7 +15,7 @@ export const QuizHome = () => {
   }, [nextQuestion]);
   useEffect(() => {
     history.push(`/quiz/${currentQuestion}`);
-  }, [currentQuestion]);
+  }, [currentQuestion, history]);
   return (
     <motion.div
       variants={routeVariants}

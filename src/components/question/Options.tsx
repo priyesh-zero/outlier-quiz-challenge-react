@@ -73,7 +73,7 @@ const Option: FC<OptionProps> = ({
   const controls = useAnimation();
   useEffect(() => {
     controls.start("animate");
-  }, []);
+  }, [controls]);
   useEffect(() => {
     if (selected && selected === option) {
       controls.set("animateDelay");
@@ -87,7 +87,7 @@ const Option: FC<OptionProps> = ({
       controls.set("animateDelay");
       controls.start("correct");
     }
-  }, [selected]);
+  }, [selected, controls, correctAnswer, option]);
 
   const handleHover = (animation: string) => {
     if (!selected) {
