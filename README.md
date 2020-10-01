@@ -28,3 +28,9 @@ I am no Sybill Trelawney, but hey its a good thing to me. But I plan to move it 
 - [ ] Add Admin Panel that can register applicants and see the results 
 - [ ] Mailing system to the registered applicant
 - [ ] Authentication using magic link or auto-generate auto-expire credentials
+
+### Personal Reference 
+
+Docker command used during the development of the project
+
+**docker run --user $(id -u):$(id -g) --name react -p 3000:3000 --rm -it -w /usr/src/app -v $(pwd):/usr/src/app node bash**
