@@ -18,9 +18,9 @@ export const Rating: FC<RatingProps> = ({ difficulty }) => {
   const stars = [];
   for (let i = 0; i < 5; i++) {
     if (i < level) {
-      stars.push(<FullStar />);
+      stars.push(<FullStar key={`Star-${i}`} />);
     } else {
-      stars.push(<EmptyStar />);
+      stars.push(<EmptyStar key={`Star-${i}`} />);
     }
   }
   return <div className="d-flex">{stars}</div>;

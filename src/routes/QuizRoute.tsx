@@ -19,7 +19,7 @@ export const QuizRoute = () => {
         style={{ height: 5 }}
         animated
         striped
-        now={(currentQuestion / questions.length) * 100}
+        now={((currentQuestion + 1) / questions.length) * 100}
       />
       <Switch location={location} key={location.key}>
         <Route path="/quiz/complete" component={CompleteScreen} />

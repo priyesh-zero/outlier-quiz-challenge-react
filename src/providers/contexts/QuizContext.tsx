@@ -5,12 +5,14 @@ import React, {
   useEffect,
   useCallback,
   useRef,
+  useContext,
 } from "react";
 
 import { Question } from "../../interface/question";
 import { useFetch } from "../../hooks/useFetch";
 import { questionsUrl } from "../../constant";
 import { useHistory } from "react-router";
+import { UserContext } from "./UserContext";
 
 const dummyQuestions: Question[] = [];
 
@@ -27,6 +29,8 @@ interface IQuizContext {
   actualScore: number;
   progress: (_: boolean) => void;
   hasCompleted: () => boolean;
+  checkAuth: () => boolean;
+  persistScore: () => void;
 }
 
 export const QuizContext = createContext<IQuizContext>({
@@ -42,6 +46,8 @@ export const QuizContext = createContext<IQuizContext>({
   actualScore: 0,
   progress: (_) => {},
   hasCompleted: () => false,
+  checkAuth: () => false,
+  persistScore: () => {},
 });
 
 export const QuizProvider: FC<{}> = ({ children }) => {
@@ -57,17 +63,30 @@ export const QuizProvider: FC<{}> = ({ children }) => {
   const [maxScore, setMaxScore] = useState(100);
   const [minScore, setMinScore] = useState(0);
   const history = useHistory();
+  const users = JSON.parse(window.localStorage.getItem("users") || "{}");
+  const { name } = useContext(UserContext);
 
   useEffect(() => {
     if (questions.length === 0 && data.length > 0) {
       window.localStorage.setItem("questions", JSON.stringify(data));
       setQuestions(data);
     }
-  }, [data]);
+  }, [data, questions.length]);
 
   const nextQuestion = useCallback(() => {
     setCurrentQuestion((state) => state + 1);
   }, []);
+
+  const checkAuth = useCallback(() => {
+    if (name === "") return false;
+    return Object.keys(users).indexOf(name) === -1;
+  }, [name, users]);
+
+  const persistScore = useCallback(() => {
+    users[name] = { maxScore, actualScore, minScore };
+    console.log(users);
+    window.localStorage.setItem("users", JSON.stringify(users));
+  }, [users, actualScore, minScore, maxScore]);
 
   const getCurrentQuestion: GetCurrentQuestion = () => {
     if (!questions) return null;
@@ -119,6 +138,8 @@ export const QuizProvider: FC<{}> = ({ children }) => {
         actualScore,
         progress,
         hasCompleted,
+        checkAuth,
+        persistScore,
       }}
     >
       {children}

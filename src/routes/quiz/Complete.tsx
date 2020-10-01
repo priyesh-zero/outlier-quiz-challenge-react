@@ -5,11 +5,13 @@ import { QuizContext } from "../../providers/contexts/QuizContext";
 import { useHistory } from "react-router";
 
 export const CompleteScreen = () => {
-  const { actualScore, hasCompleted } = useContext(QuizContext);
+  const { actualScore, hasCompleted, persistScore } = useContext(QuizContext);
   const history = useHistory();
   useEffect(() => {
     if (!hasCompleted()) {
       history.push("/");
+    } else {
+      persistScore();
     }
   }, []);
   return (

@@ -1,5 +1,5 @@
 import { motion, useAnimation } from "framer-motion";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { useHistory, useRouteMatch } from "react-router";
 import { Options } from "../../components/question/Options";
@@ -11,12 +11,24 @@ export const Questions = () => {
   const {
     params: { qno },
   } = useRouteMatch<{ qno: string }>();
-  const { currentQuestion, getCurrentQuestion, progress } = useContext(
-    QuizContext
-  );
+  const {
+    currentQuestion,
+    getCurrentQuestion,
+    progress,
+    checkAuth,
+  } = useContext(QuizContext);
   const history = useHistory();
   const successControls = useAnimation();
   const errorControls = useAnimation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!checkAuth()) {
+      history.push(`/`);
+    } else {
+      setLoading(false);
+    }
+  }, [checkAuth, setLoading]);
 
   useEffect(() => {
     if (currentQuestion !== parseInt(qno)) {
@@ -25,7 +37,18 @@ export const Questions = () => {
   }, [currentQuestion]);
 
   const question = getCurrentQuestion();
-  if (!question) return <></>;
+  if (!question || loading)
+    return (
+      <motion.div
+        variants={routeVariants}
+        initial={"entry"}
+        animate={"stage"}
+        exit={"exit"}
+        className="bg-dark flex-fill d-flex justify-content-center align-items-center"
+      >
+        <div className="h2 text-center text-white">Initializing Test!</div>
+      </motion.div>
+    );
 
   const handleSelect = async (option: string) => {
     successControls.set("hidden");
@@ -65,6 +88,7 @@ export const Questions = () => {
         <Options
           options={[question.correct_answer, ...question.incorrect_answers]}
           handleSelect={handleSelect}
+          correctAnswer={question.correct_answer}
         />
         <div className="w-100 position-relative">
           <motion.h2

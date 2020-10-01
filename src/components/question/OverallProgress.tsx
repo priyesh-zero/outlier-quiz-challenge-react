@@ -23,6 +23,7 @@ export const OverallProgress = () => {
           .sort((a, b) => b.score - a.score)
           .map((score) => (
             <div
+              key={score.class}
               className={`${score.class} position-absolute h-100 rounded`}
               style={{ width: `${score.score}%`, transition: "all 300ms ease" }}
             />
